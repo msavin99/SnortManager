@@ -1,12 +1,13 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # compiled output
-/dist
-/tmp
-/out-tsc
+/SnortAngular/dist
+/SnortAngular/tmp
+/SnortAngular/out-tsc
 
 # dependencies
 /node_modules
+/SnortAngular/node_modules
 
 # IDEs and editors
 /.idea
@@ -25,17 +26,17 @@
 !.vscode/extensions.json
 
 # misc
-/.sass-cache
-/connect.lock
-/coverage
-/libpeerconnection.log
+/SnortAngular/.sass-cache
+/SnortAngular/connect.lock
+/SnortAngular/coverage
+/SnortAngular/libpeerconnection.log
 npm-debug.log
 testem.log
-/typings
+/SnortAngular/typings
 
 # e2e
-/e2e/*.js
-/e2e/*.map
+/SnortAngular/e2e/*.js
+/SnortAngular/e2e/*.map
 
 # System Files
 .DS_Store

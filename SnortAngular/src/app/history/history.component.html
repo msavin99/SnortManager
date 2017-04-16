@@ -1,0 +1,14 @@
+<div class="container-fluid">
+  <h1>History of uploaded .csv rule files </h1>
+
+  <div *ngFor="let rulesPackage of historyRules" class="card card-outline rules-card">
+    <div class="card-header">{{ rulesPackage.FileName }}</div>
+    <div class="card-block">
+      <h4 class="card-title">{{rulesPackage.FileName}}</h4>
+      <p class="card-text">Description : {{rulesPackage.Description}}</p>
+      <p class="card-text">Uploaded on : {{rulesPackage.CreationDate}}</p>
+      <button class="btn btn-success" (click)='[goToRulesDetails(rulesPackage.Id)]'>Open Rules</button>
+      <button class="btn btn-danger" (click)='[deleteItem(rulesPackage.Id)]'>Delete file from History</button>
+    </div>
+  </div>
+</div>
