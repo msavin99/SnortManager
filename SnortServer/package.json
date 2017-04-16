@@ -1,0 +1,17 @@
+{
+  "name": "SnortManagerServer",
+  "version": "1.0.0",
+  "description": "API for adding snort rules",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start":"node app.js"
+  },
+  "author": "Trifu Alexandru",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "~1.0.1",
+    "express": "^4.15.2",
+    "mysql": "^2.13.0"
+  }
+}
