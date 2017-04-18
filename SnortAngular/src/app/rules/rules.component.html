@@ -1,11 +1,11 @@
 <div *ngIf="rulesCollection" class="container-fluid">
   <button class="btn btn-primary btn-xs" (click)="goBack()"><span class="fa fa-arrow-left"></span> Back</button>
-  <h1>Rules from file : {{ rulesCollection.FileName }} </h1>
+  <h1>Rules from file : {{ rulesCollection.fileName }} </h1>
   <div class="card card-outline">
-    <div class="card-header">Uploaded on : {{ rulesCollection.CreationDate }}</div>
+    <div class="card-header">Uploaded on : {{ rulesCollection.creationDate }}</div>
     <div class="card-block">
       <h4 class="card-title">Defined Rules :</h4>
-      <p class="card-text">{{rulesCollection.Description}}</p>
+      <p class="card-text">{{ rulesCollection.description }}</p>
       <table class="table">
         <thead class="thead-inverse">
           <tr>
@@ -22,8 +22,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let rule of rulesCollection.Rules; let i = index;">
-            <th scope="row">{{i+1}}</th>
+          <tr *ngFor="let rule of rules">
+            <th scope="row">{{rule.id}}</th>
             <td>{{ typeToString(rule.type) }}</td>
             <td>{{ protocolToString(rule.protocol) }}</td>
             <td>{{ rule.sourceIP}}</td>

@@ -72,8 +72,7 @@ router.post('/rules', function (req, res) {
             }
         });
     })
-
-    //Gets a collection by it's ID
+    //Gets the collection details corresponding to a collection by it's ID
     .get('/rules/:collection_id', function (req, res) {
         var query = "SELECT * FROM ?? WHERE ?? = ?";
         var table = ["rules_collection", "collection_id", req.params.collection_id];
@@ -86,6 +85,21 @@ router.post('/rules', function (req, res) {
             }
         })
     })
+    //Gets all rules corresponding to a collection by it's ID
+    .get('/collection/:collection_id', function (req, res) {
+        var query = "SELECT * FROM ?? WHERE ?? = ?";
+        var table = ["rule", "collection_id", req.params.collection_id];
+        query = mysql.format(query, table);
+        connection.query(query, function (err, rows) {
+            if (err) {
+                res.json({ "Error": true, "Message": " Error executing MySQL query" })
+            } else {
+                res.json({ "Error": false, "Message": "Success", "Collections": rows });
+            }
+        })
+    })
+
+
 
 
 //ROUTES FOR RULES TABLE
@@ -136,7 +150,7 @@ router.get('/rule/:id', function (req, res) {
             }
         });
     })
-    .delete('/rule/:id',function (req, res) {
+    .delete('/rule/:id', function (req, res) {
         var query = "DELETE FROM  ?? WHERE ?? = ?";
         var table = ["rule", "id", req.body.id];
         query = mysql.format(query, table);

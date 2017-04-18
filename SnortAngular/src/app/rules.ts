@@ -11,39 +11,10 @@ export class Rule {
 }
 
 export class RulesCollection {
-
-        private collection_id: number
-        private fileName: String
-        private creationDate: String
-        private description: String
-
-    constructor() { console.log("asd");}
-
-
-
-
-    public get Id() {
-        return this.collection_id;
-    }
-    get Description() {
-        return this.description;
-    }
-    set Description(value) {
-        this.description = value;
-    }
-    get FileName() {
-        return this.fileName;
-    }
-    set FileName(value) {
-        this.fileName = value;
-    }
-    get CreationDate() {
-        return this.creationDate;
-    }
-    set CreationDate(value) {
-        this.creationDate = value;
-    }
-
+     collection_id: number;
+     fileName: String;
+     creationDate: String;
+     description: String;
 }
 
 export enum Type {

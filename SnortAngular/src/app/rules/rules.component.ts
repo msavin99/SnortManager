@@ -12,22 +12,32 @@ import 'rxjs/add/operator/switchMap';
 })
 
 export class RulesComponent implements OnInit {
-  rulesCollection: RulesCollection
+
+  //  Fields
+  rules: Rule[];
+  rulesCollection: RulesCollection;
+  selectedRule: Rule;
+  
   constructor(
     private rulesService: RulesService,
     private route: ActivatedRoute,
     private location: Location,
-  ) {}
+  ) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
   ngAfterViewInit() {
     this.route.params
-      .switchMap((params: Params) => this.rulesService.getRulesPack(+params['id']))
-      .subscribe((receivedRules: RulesCollection) => {
-        this.rulesCollection = receivedRules;
-        console.log(this.rulesCollection.CreationDate);
-      }, err => console.log(err));
-    //this.rulesService.getRules(1).then(receivedRules=> this.rulesCollection = receivedRules);
+      .switchMap((params: Params) =>
+        this.rulesService.getPackage(+params['id']))
+      .subscribe((receivedDescription: RulesCollection) => { this.rulesCollection = receivedDescription; console.log(this.rulesCollection) },
+      err => console.log(err));
+    this.route.params
+      .switchMap(
+      (params: Params) =>
+        this.rulesService.getPackageRules(+params['id']))
+      .subscribe((receivedRules: Rule[]) => { this.rules = receivedRules; console.log(this.rules) },
+      err => console.log(err));
+
   }
 
   directionToString(direction: Direction): string {

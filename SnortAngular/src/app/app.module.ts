@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
-import { DropdownModule } from 'ng2-bootstrap/dropdown';
+import { BsDropdownModule } from 'ng2-bootstrap/dropdown';
 import { HomeComponent } from './home/home.component';
 import { RulesComponent } from './rules/rules.component';
 import { HistoryComponent } from './history/history.component';
@@ -18,7 +18,6 @@ import { RulesService } from './rules.service';
     HistoryComponent
   ],
   imports: [
-    DropdownModule.forRoot(),
     BrowserModule,
     FormsModule,
     HttpModule,
@@ -27,7 +26,8 @@ import { RulesService } from './rules.service';
       { path: 'home', component: HomeComponent },
       { path: 'rules/:id', component: RulesComponent },
       { path: 'history', component: HistoryComponent }
-    ])
+    ]),
+    BsDropdownModule.forRoot()
   ],
   providers: [RulesService],
   bootstrap: [AppComponent]
