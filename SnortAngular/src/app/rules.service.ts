@@ -31,7 +31,14 @@ export class RulesService {
     
   }
   */
-
+  deleteRulePack(collection_id : number) : Promise<void>{
+    console.log("API called for deleting Pack with collection_id:"+collection_id);
+    const url =`${this.rulesCollectionsDetailsUrl}/${collection_id}`;
+    return this.http.delete(url, {headers:this.headers})
+      .toPromise()
+      .then(()=>null)
+      .catch(this.handleError);
+  }
   //  Get the details of a rules package with specific id
   getPackage(id: number): Promise<RulesCollection> {
     const url = `${this.rulesCollectionsDetailsUrl}/${id}`;

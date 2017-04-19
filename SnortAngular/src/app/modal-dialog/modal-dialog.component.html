@@ -1,0 +1,23 @@
+<div bsModal #childModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">Warning !!!</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideChildModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Deleting an item is ireversible ! <br>
+        All data will be lost and can't be uncovered ! 
+        <br>Click <b>"Delete"</b> to delete the item.
+        <br> Click <b>"Don't delete"</b> to close this window and leave everyting untouched.
+        <br>
+        <div class="btn-group btn-group-justified inline mx-auto">
+          <button class="btn btn-success" (click)='hideChildModal()'>Don't Delete</button>
+          <button class="btn btn-danger" (click)='deleteItem(id)'>Delete Rule</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

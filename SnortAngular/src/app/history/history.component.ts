@@ -20,13 +20,16 @@ export class HistoryComponent implements OnInit {
     this.getRulesCollections();
   }
 
-
+  // Get the rules collections in order to show them in the history view
   getRulesCollections(): void {
     this.rulesService.getAllRulesPacks().then((res: RulesCollection[]) => { this.historyRules = res; console.log(this.historyRules) });
   }
 
-  deleteItem(id: number) {
-    //this.rulesService.deleteRulesPack(id).then(historyRules => this.historyRules = historyRules);
+  deleteItemById(id: number) {
+    this.rulesService.deleteRulePack(id).then(() => {
+      this.getRulesCollections();
+      console.log("Rule pack with id: " + id + " was deleted succesfully!")
+    });
   }
   goToRulesDetails(id: number) {
     this.router.navigate(['/rules', id])

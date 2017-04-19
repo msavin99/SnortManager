@@ -79,7 +79,10 @@ export class RulesComponent implements OnInit {
 
       this.rulesService.updateRule(this.rules.find(rule => rule.id == this.selectedRuleId))
         .then(
-        updatedRule => this.rules[this.selectedRuleId] = updatedRule,
+        updatedRule => {
+          var tmp = this.rules.find(rule => rule.id == this.selectedRuleId);
+          tmp = updatedRule
+        },
         err => console.log(err)
         ).then(
         updatedRule => {
@@ -88,6 +91,7 @@ export class RulesComponent implements OnInit {
         },
         err => console.log(err)
         );
+
     } else {
       // Insert the new rule & retrieve all rules
       this.rulesService.insertRule(this.rules.pop())
@@ -106,7 +110,7 @@ export class RulesComponent implements OnInit {
       .then((receivedRules: Rule[]) => { this.rules = receivedRules; console.log("Refreshed Rules:" + this.rules.length), err => console.log(err) });
   }
 
-  deleteRule(id: number) {
+  deleteItemById(id: number) {
     this.rulesService.deleteRule(id)
       .then(() => {
         //Filter so the array contains only the rules that have the rule.id !== deleted rule id

@@ -8,14 +8,17 @@ import { BsDropdownModule } from 'ng2-bootstrap/dropdown';
 import { HomeComponent } from './home/home.component';
 import { RulesComponent } from './rules/rules.component';
 import { HistoryComponent } from './history/history.component';
+import { ModalModule } from 'ng2-bootstrap/modal';
 import { RulesService } from './rules.service';
+import { ModalDialogComponent } from './modal-dialog/modal-dialog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     RulesComponent,
-    HistoryComponent
+    HistoryComponent,
+    ModalDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -27,7 +30,8 @@ import { RulesService } from './rules.service';
       { path: 'rules/:id', component: RulesComponent },
       { path: 'history', component: HistoryComponent }
     ]),
-    BsDropdownModule.forRoot()
+    BsDropdownModule.forRoot(),
+    ModalModule.forRoot()
   ],
   providers: [RulesService],
   bootstrap: [AppComponent]

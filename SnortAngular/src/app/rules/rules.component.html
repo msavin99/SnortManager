@@ -42,7 +42,7 @@
                 <button class="btn btn-primary btn-xs" alt="Edit" (click)='[selectRuleForEdit(rule.id)]'>
                 <span class="fa fa-pencil"></span>
               </button>
-                <button class="btn btn-danger btn-xs" alt="Delete" (click)='[deleteRule(rule.id)]'>
+                <button class="btn btn-danger btn-xs" alt="Delete" (click)='modal.showChildModal(rule.id)'>
                 <span class="fa fa-trash"></span>
               </button>
               </td>
@@ -81,15 +81,17 @@
                 <button class="btn btn-primary btn-xs" alt="Save" (click)='[saveRule()]'>
                 <span class="fa fa-floppy-o"></span>
               </button>
-                <button class="btn btn-danger btn-xs" alt="Delete" (click)='[deleteRule(rule.id)]'>
+                <button class="btn btn-danger btn-xs" alt="Delete" (click)='modal.showChildModal(rule.id)'>
                 <span class="fa fa-trash"></span>
               </button>
               </td>
             </ng-template>
           </tr>
-
         </tbody>
       </table>
     </div>
   </div>
 </div>
+
+<!--Just the modal dialog-->
+<modal-dialog #modal [parent]='this'></modal-dialog>

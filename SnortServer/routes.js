@@ -65,7 +65,7 @@ router.post('/rules', function (req, res) {
     })
     .delete("/rules/:collection_id", function (req, res) {
         var query = "DELETE FROM  ?? WHERE ?? = ?";
-        var table = ["rules_collection", "collection_id", req.body.collection_id];
+        var table = ["rules_collection", "collection_id", req.params.collection_id];
         query = mysql.format(query, table);
         connection.query(query, function (err, rows) {
             if (err) {
@@ -137,7 +137,7 @@ router.get('/rule/:id', function (req, res) {
         });
     })
     .put('/rule/:id', function (req, res) {
-        var query = "UPDATE ?? SET ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ? WHERE ?? = ?";
+        var query = "UPDATE ?? SET ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ? WHERE ?? = ?";
         var table = ["rule",
             "type", req.body.type,
             "protocol", req.body.protocol,
