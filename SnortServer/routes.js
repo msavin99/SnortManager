@@ -27,6 +27,7 @@ router.get('/rules', function (req, res) {
         function (err, rows, fields) {
             if (err) {
                 res.json({ "Error": true, "Message": "Error executing MySQL query!" });
+                console.log("Error !"+err);
             } else {
                 res.json({ "Error": false, "Collections": rows });
             }
@@ -42,6 +43,7 @@ router.post('/rules', function (req, res) {
     connection.query(query, function (err, rows) {
         if (err) {
             res.json({ "Error": true, "Message": "Error executing MySQL query!" });
+            console.log("Error !"+err);
         } else {
             res.json({ "Error": false, "Message": "Rule Collection Created !" });
         }
@@ -55,6 +57,7 @@ router.post('/rules', function (req, res) {
         connection.query(query, function (err, rows) {
             if (err) {
                 res.json({ "Error": true, "Message": "Error executing MySQL query!" });
+                console.log("Error !"+err);
             } else {
                 res.json({ "Error": false, "Message": "Rule Collection Updated !" });
             }
@@ -67,6 +70,7 @@ router.post('/rules', function (req, res) {
         connection.query(query, function (err, rows) {
             if (err) {
                 res.json({ "Error": true, "Message": "Error executing MySQL query!" });
+                console.log("Error !"+err);
             } else {
                 res.json({ "Error": false, "Message": "Deleted the collection with id = !" + req.params.collection_id });
             }
@@ -80,6 +84,7 @@ router.post('/rules', function (req, res) {
         connection.query(query, function (err, rows) {
             if (err) {
                 res.json({ "Error": true, "Message": " Error executing MySQL query" })
+                console.log("Error !"+err);
             } else {
                 res.json({ "Error": false, "Message": "Success", "Collections": rows });
             }
@@ -93,13 +98,12 @@ router.post('/rules', function (req, res) {
         connection.query(query, function (err, rows) {
             if (err) {
                 res.json({ "Error": true, "Message": " Error executing MySQL query" })
+                console.log("Error !"+err);
             } else {
                 res.json({ "Error": false, "Message": "Success", "Collections": rows });
             }
         })
     })
-
-
 
 
 //ROUTES FOR RULES TABLE
@@ -111,40 +115,44 @@ router.get('/rule/:id', function (req, res) {
     connection.query(query, function (err, rows) {
         if (err) {
             res.json({ "Error": true, "Message": " Error executing MySQL query" })
+            console.log("Error !"+err);
         } else {
             res.json({ "Error": false, "Message": "Success", "Rules": rows });
         }
     })
 })
     .post('/rule', function (req, res) {
-        var query = "INSERT INTO ?? (??,??,??,??,??,??,??,??) VALUES (?,?,?,?,?,?,?,?)";
+        var query = "INSERT INTO ?? (??,??,??,??,??,??,??,??,??) VALUES (?,?,?,?,?,?,?,?,?)";
         var table =
-            ["rule", "type", "sourceIP", "sourcePort", "direction", "destinationIP", "destinationPort", "content", "collection_id",
-                req.body.type, req.body.sourceIP, req.body.sourcePort, req.body.direction, req.body.destinationIP, req.body.destinationPort, req.body.content, req.body.collection_id];
+            ["rule", "type", "sourceIP", "sourcePort", "direction", "destinationIP", "destinationPort", "content", "collection_id","protocol",
+                req.body.type, req.body.sourceIP, req.body.sourcePort, req.body.direction, req.body.destinationIP, req.body.destinationPort, req.body.content, req.body.collection_id,req.body.protocol];
         query = mysql.format(query, table);
         connection.query(query, function (err, rows) {
             if (err) {
                 res.json({ "Error": true, "Message": "Error executing MySQL query!" });
+                console.log("Error !"+err);
             } else {
                 res.json({ "Error": false, "Message": "Rule added to collection " + req.body.collection_id + " !" });
             }
         });
     })
     .put('/rule/:id', function (req, res) {
-        var query = "UPDATE ?? SET ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ? WHERE ?? = ?";
+        var query = "UPDATE ?? SET ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ? WHERE ?? = ?";
         var table = ["rule",
             "type", req.body.type,
+            "protocol", req.body.protocol,
             "sourceIP", req.body.sourceIP,
             "sourcePort", req.body.sourcePort,
             "direction", req.body.direction,
             "destinationIP", req.body.destinationIP,
             "destinationPort", req.body.destinationPort,
             "content", req.body.content,
-            "collection_id", req.body.collection_id];
+            "id", req.body.id];
         query = mysql.format(query, table);
         connection.query(query, function (err, rows) {
             if (err) {
                 res.json({ "Error": true, "Message": "Error executing MySQL query!" });
+                console.log("Error !"+err);
             } else {
                 res.json({ "Error": false, "Message": "Rule Updated !" });
             }
@@ -152,13 +160,14 @@ router.get('/rule/:id', function (req, res) {
     })
     .delete('/rule/:id', function (req, res) {
         var query = "DELETE FROM  ?? WHERE ?? = ?";
-        var table = ["rule", "id", req.body.id];
+        var table = ["rule", "id", req.params.id];
         query = mysql.format(query, table);
         connection.query(query, function (err, rows) {
             if (err) {
                 res.json({ "Error": true, "Message": "Error executing MySQL query!" });
+                console.log("Error !"+err);
             } else {
-                res.json({ "Error": false, "Message": "Deleted the rule with id = !" + req.params.id });
+                res.json({ "Error": false, "Message": "Deleted the rule with id = " + req.params.id });
             }
         });
     })

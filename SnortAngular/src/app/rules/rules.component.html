@@ -2,10 +2,15 @@
   <button class="btn btn-primary btn-xs" (click)="goBack()"><span class="fa fa-arrow-left"></span> Back</button>
   <h1>Rules from file : {{ rulesCollection.fileName }} </h1>
   <div class="card card-outline">
-    <div class="card-header">Uploaded on : {{ rulesCollection.creationDate }}</div>
+    <div class="card-header">Defined Rules :</div>
     <div class="card-block">
-      <h4 class="card-title">Defined Rules :</h4>
-      <p class="card-text">{{ rulesCollection.description }}</p>
+      <h4 class="card-title">{{ rulesCollection.description }}</h4>
+      <p class="card-text">Uploaded on : {{ rulesCollection.creationDate }}</p>
+      <!--Add new rule button-->
+      <button class="btn btn-success" id="addRule" (click)="insertRule()">
+        <span class="fa fa-plus"></span> Insert new rule
+      </button>
+      <!--Render table-->
       <table class="table">
         <thead class="thead-inverse">
           <tr>
@@ -21,22 +26,68 @@
             <th> Actions </th>
           </tr>
         </thead>
-        <tbody>
-          <tr *ngFor="let rule of rules">
-            <th scope="row">{{rule.id}}</th>
-            <td>{{ typeToString(rule.type) }}</td>
-            <td>{{ protocolToString(rule.protocol) }}</td>
-            <td>{{ rule.sourceIP}}</td>
-            <td>{{ rule.sourcePort}}</td>
-            <td>{{ directionToString(rule.direction) }}</td>
-            <td>{{ rule.destinationIP}}</td>
-            <td>{{ rule.destinationPort}}</td>
-            <td>{{ rule.content}}</td>
-            <td>
-              <button class="btn btn-primary btn-xs" alt="Edit"><span class="fa fa-pencil"></span></button>
-              <button class="btn btn-danger btn-xs" alt="Delete"><span class="fa fa-trash"></span></button>
-            </td>
+        <tbody class="table table-hover">
+          <tr *ngFor="let rule of rules; let i = index">
+            <ng-container *ngIf="rule.id != selectedRuleId;else editable">
+              <th scope="row">{{ i + 1 }}</th>
+              <td>{{ typeToString(rule.type) }}</td>
+              <td>{{ protocolToString(rule.protocol) }}</td>
+              <td>{{ rule.sourceIP}}</td>
+              <td>{{ rule.sourcePort}}</td>
+              <td>{{ directionToString(rule.direction) }}</td>
+              <td>{{ rule.destinationIP}}</td>
+              <td>{{ rule.destinationPort}}</td>
+              <td>{{ rule.content}}</td>
+              <td>
+                <button class="btn btn-primary btn-xs" alt="Edit" (click)='[selectRuleForEdit(rule.id)]'>
+                <span class="fa fa-pencil"></span>
+              </button>
+                <button class="btn btn-danger btn-xs" alt="Delete" (click)='[deleteRule(rule.id)]'>
+                <span class="fa fa-trash"></span>
+              </button>
+              </td>
+            </ng-container>
+            <!-- If it's editable , show the editable template -->
+            <ng-template #editable class="form-group">
+              <th scope="row">{{ i + 1 }}</th>
+              <!--Type-->
+              <td>
+                <select class="form-control" id="selectType" [(ngModel)]='rule.type'>
+                  <option [ngValue]='0'>{{ typeToString(0) }}</option>
+                  <option [ngValue]='1'>{{ typeToString(1) }}</option>
+                  <option [ngValue]='2'>{{ typeToString(2) }}</option>
+                </select>
+              </td>
+              <!--Protocol-->
+              <td>
+                <select class="form-control" id="selectProtocol" [(ngModel)]='rule.protocol'>
+                  <option [ngValue]='0'>{{ protocolToString(0) }}</option>
+                  <option [ngValue]='1'>{{ protocolToString(1) }}</option>
+                </select>
+              </td>
+              <td><input class="form-control" [(ngModel)]='rule.sourceIP'></td>
+              <td><input class="form-control" [(ngModel)]='rule.sourcePort'></td>
+              <td>
+                <select class="form-control" id="selectDirection" [(ngModel)]='rule.direction' >
+                  <option [ngValue]='0'>{{ directionToString(0) }}</option>
+                  <option [ngValue]='1'>{{ directionToString(1) }}</option>
+                  <option [ngValue]='2'>{{ directionToString(2) }}</option>
+                </select>
+              </td>
+              <td><input class="form-control" [(ngModel)]='rule.destinationIP'></td>
+              <td><input class="form-control" [(ngModel)]='rule.destinationPort'></td>
+              <td><textarea class="form-control" [(ngModel)]='rule.content'></textarea></td>
+              <td>
+                <button class="btn btn-primary btn-xs" alt="Save" (click)='[saveRule()]'>
+                <span class="fa fa-floppy-o"></span>
+              </button>
+                <button class="btn btn-danger btn-xs" alt="Delete" (click)='[deleteRule(rule.id)]'>
+                <span class="fa fa-trash"></span>
+              </button>
+              </td>
+            </ng-template>
           </tr>
+
         </tbody>
       </table>
     </div>

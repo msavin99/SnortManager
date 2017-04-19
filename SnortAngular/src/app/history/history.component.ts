@@ -17,14 +17,12 @@ export class HistoryComponent implements OnInit {
   constructor(private rulesService: RulesService, private router: Router) { }
 
   ngOnInit() {
-    this.rulesService.getAllRulesPacks().then((res: RulesCollection[]) => { this.historyRules = res; console.log(this.historyRules) });
-    //this.historyRules.push(new RulesCollection(1,"ADADADA","0001010101","Super tare..e naiba"));
-    //setTimeout(()=> {this.historyRules.push(new RulesCollection(1,"ADADADA","0001010101","Super tare..e naiba"));},2000);
+    this.getRulesCollections();
   }
 
 
   getRulesCollections(): void {
-
+    this.rulesService.getAllRulesPacks().then((res: RulesCollection[]) => { this.historyRules = res; console.log(this.historyRules) });
   }
 
   deleteItem(id: number) {

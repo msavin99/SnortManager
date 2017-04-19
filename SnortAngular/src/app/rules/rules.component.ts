@@ -16,8 +16,8 @@ export class RulesComponent implements OnInit {
   //  Fields
   rules: Rule[];
   rulesCollection: RulesCollection;
-  selectedRule: Rule;
-  
+  selectedRuleId: number;
+
   constructor(
     private rulesService: RulesService,
     private route: ActivatedRoute,
@@ -68,6 +68,53 @@ export class RulesComponent implements OnInit {
         return "Warning";
     }
   }
+
+  selectRuleForEdit(id: number) {
+    this.selectedRuleId = id;
+    console.log("Selected rule for edit:" + this.selectedRuleId);
+  }
+  saveRule() {
+    // If the rule is already existing
+    if (this.selectedRuleId != null) {
+
+      this.rulesService.updateRule(this.rules.find(rule => rule.id == this.selectedRuleId))
+        .then(
+        updatedRule => this.rules[this.selectedRuleId] = updatedRule,
+        err => console.log(err)
+        ).then(
+        updatedRule => {
+          console.log("Rule " + this.selectedRuleId + " was updated succesfully");
+          this.selectedRuleId = null;
+        },
+        err => console.log(err)
+        );
+    } else {
+      // Insert the new rule & retrieve all rules
+      this.rulesService.insertRule(this.rules.pop())
+        .then(() => this.refreshRules())
+        .catch(err => console.log(err));
+    }
+  }
+  insertRule() {
+    this.rules.push(new Rule(this.rulesCollection.collection_id));
+    console.log("New array:");
+    console.log(this.rules);
+  }
+
+  refreshRules() {
+    this.rulesService.getPackageRules(this.rulesCollection.collection_id)
+      .then((receivedRules: Rule[]) => { this.rules = receivedRules; console.log("Refreshed Rules:" + this.rules.length), err => console.log(err) });
+  }
+
+  deleteRule(id: number) {
+    this.rulesService.deleteRule(id)
+      .then(() => {
+        //Filter so the array contains only the rules that have the rule.id !== deleted rule id
+        this.rules = this.rules.filter(rule => rule.id !== id);
+        console.log("Rule " + id + " was deleted succesfully!");
+      });
+  }
+
   goBack(): void {
     this.location.back();
   }

@@ -1,20 +1,25 @@
 export class Rule {
-
+    id: number;
     type: Type = Type.Alert;
-    protocol: Protocol = Protocol.TCP;
-    sourceIP: String = "any";
-    sourcePort: String = "any";
-    direction: Direction = Direction.Right;
-    destinationIP: String = "any";
-    destinationPort: String = "any";
-    content: String = " Very nice rule content !";
+    protocol: number = Protocol.TCP;
+    sourceIP: string = "any";
+    sourcePort: string = "any";
+    direction: number = Direction.Right;
+    destinationIP: string = "any";
+    destinationPort: string = "any";
+    content: string = " Very nice rule content !";
+    collection_id = 0;
+
+    constructor(collection_id: number){
+        this.collection_id = collection_id;
+    }
 }
 
 export class RulesCollection {
      collection_id: number;
-     fileName: String;
-     creationDate: String;
-     description: String;
+     fileName: string;
+     creationDate: string;
+     description: string;
 }
 
 export enum Type {

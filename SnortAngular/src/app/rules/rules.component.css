@@ -5,3 +5,14 @@ h1{
     margin-top:20px;
     margin-bottom:50px;
 }
+input{
+    width:100%;
+}
+textarea, select{
+    width:100%;
+}
+
+#addRule{
+    float:right;
+    margin:10px;
+}
