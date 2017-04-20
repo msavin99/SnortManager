@@ -5,10 +5,11 @@
 //======================================================================
 
 //Get the necessary packages
-var express 	= require('express');
-var app			= express();			// define our app that's using express
+var express 	  = require('express');
+var app			    = express();			// define our app that's using express
 var bodyParser  = require('body-parser');
 var router      = require('./routes');
+
 // configure the app to use bodyParser()
 // this will let us get the data from a POST
 
@@ -19,9 +20,10 @@ var port = process.env.PORT || 8080; 	//set the port
 
 
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", "http://localhost:4200");
   res.header("Access-Control-Allow-Methods","GET,POST,PUT,DELETE,OPTIONS");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header('Access-Control-Allow-Credentials', true);
   next();
 });
 

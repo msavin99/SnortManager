@@ -4,6 +4,7 @@
 /SnortAngular/dist
 /SnortAngular/tmp
 /SnortAngular/out-tsc
+/SnortServer/uploads
 
 # dependencies
 node_modules/

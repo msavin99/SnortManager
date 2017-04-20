@@ -1,0 +1,35 @@
+.my-drop-zone { 
+    background-color:#dbdbdb; 
+    color:#8c8c8c;
+    height:15em;
+    line-height:15em;
+    text-align: center;
+
+    display:-ms-flexbox;
+    -ms-flex-pack:center;
+    -ms-flex-align:center;
+
+    /* Firefox */
+    display:-moz-box;
+    -moz-box-pack:center;
+    -moz-box-align:center;
+
+    /* Safari, Opera, and Chrome */
+    display:-webkit-box;
+    -webkit-box-pack:center;
+    -webkit-box-align:center;
+
+}
+.progress{
+    margin-bottom:40px;
+}
+.upload-card{
+    margin-bottom: 40px;
+    width:70%;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.nv-file-over { background-color:#8c8c8c;} /* Default class applied to drop zones on over */
+.another-file-over-class { border: dotted 3px green; }
+html, body { height: 100%; }

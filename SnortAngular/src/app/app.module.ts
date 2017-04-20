@@ -11,6 +11,8 @@ import { HistoryComponent } from './history/history.component';
 import { ModalModule } from 'ng2-bootstrap/modal';
 import { RulesService } from './rules.service';
 import { ModalDialogComponent } from './modal-dialog/modal-dialog.component';
+import { ImportRulesComponent } from './import-rules/import-rules.component';
+import { FileDropDirective, FileSelectDirective } from 'ng2-file-upload';
 
 @NgModule({
   declarations: [
@@ -19,6 +21,9 @@ import { ModalDialogComponent } from './modal-dialog/modal-dialog.component';
     RulesComponent,
     HistoryComponent,
     ModalDialogComponent,
+    ImportRulesComponent,
+    FileDropDirective,
+    FileSelectDirective
   ],
   imports: [
     BrowserModule,
@@ -28,7 +33,8 @@ import { ModalDialogComponent } from './modal-dialog/modal-dialog.component';
       { path: '', redirectTo: '/home', pathMatch: 'full' },
       { path: 'home', component: HomeComponent },
       { path: 'rules/:id', component: RulesComponent },
-      { path: 'history', component: HistoryComponent }
+      { path: 'history', component: HistoryComponent },
+      { path: 'import', component: ImportRulesComponent }
     ]),
     BsDropdownModule.forRoot(),
     ModalModule.forRoot()

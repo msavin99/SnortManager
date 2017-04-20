@@ -2,6 +2,21 @@
 // =======================================================================
 var express = require('express');
 var router = express.Router();          // get an instance of the express router
+
+//Declare uploader
+var multer = require('multer');
+var fs = require('fs');
+var path = require('path')
+// Declare the multer storage for uploading and renaming the files
+var storage = multer.diskStorage({
+    destination: 'uploads/',
+    filename: function (req, file, cb) {
+        console.log("Naming the file: "+file.originalname+"...");
+        cb(null, file.originalname + '-' + Date.now() + '.csv')
+    },
+})
+
+
 //SETUP MYSQL
 var mysql = require('mysql')
 var connection = mysql.createConnection({
@@ -27,7 +42,7 @@ router.get('/rules', function (req, res) {
         function (err, rows, fields) {
             if (err) {
                 res.json({ "Error": true, "Message": "Error executing MySQL query!" });
-                console.log("Error !"+err);
+                console.log("Error !" + err);
             } else {
                 res.json({ "Error": false, "Collections": rows });
             }
@@ -43,7 +58,7 @@ router.post('/rules', function (req, res) {
     connection.query(query, function (err, rows) {
         if (err) {
             res.json({ "Error": true, "Message": "Error executing MySQL query!" });
-            console.log("Error !"+err);
+            console.log("Error !" + err);
         } else {
             res.json({ "Error": false, "Message": "Rule Collection Created !" });
         }
@@ -57,7 +72,7 @@ router.post('/rules', function (req, res) {
         connection.query(query, function (err, rows) {
             if (err) {
                 res.json({ "Error": true, "Message": "Error executing MySQL query!" });
-                console.log("Error !"+err);
+                console.log("Error !" + err);
             } else {
                 res.json({ "Error": false, "Message": "Rule Collection Updated !" });
             }
@@ -70,7 +85,7 @@ router.post('/rules', function (req, res) {
         connection.query(query, function (err, rows) {
             if (err) {
                 res.json({ "Error": true, "Message": "Error executing MySQL query!" });
-                console.log("Error !"+err);
+                console.log("Error !" + err);
             } else {
                 res.json({ "Error": false, "Message": "Deleted the collection with id = !" + req.params.collection_id });
             }
@@ -84,7 +99,7 @@ router.post('/rules', function (req, res) {
         connection.query(query, function (err, rows) {
             if (err) {
                 res.json({ "Error": true, "Message": " Error executing MySQL query" })
-                console.log("Error !"+err);
+                console.log("Error !" + err);
             } else {
                 res.json({ "Error": false, "Message": "Success", "Collections": rows });
             }
@@ -98,7 +113,7 @@ router.post('/rules', function (req, res) {
         connection.query(query, function (err, rows) {
             if (err) {
                 res.json({ "Error": true, "Message": " Error executing MySQL query" })
-                console.log("Error !"+err);
+                console.log("Error !" + err);
             } else {
                 res.json({ "Error": false, "Message": "Success", "Collections": rows });
             }
@@ -115,7 +130,7 @@ router.get('/rule/:id', function (req, res) {
     connection.query(query, function (err, rows) {
         if (err) {
             res.json({ "Error": true, "Message": " Error executing MySQL query" })
-            console.log("Error !"+err);
+            console.log("Error !" + err);
         } else {
             res.json({ "Error": false, "Message": "Success", "Rules": rows });
         }
@@ -124,13 +139,13 @@ router.get('/rule/:id', function (req, res) {
     .post('/rule', function (req, res) {
         var query = "INSERT INTO ?? (??,??,??,??,??,??,??,??,??) VALUES (?,?,?,?,?,?,?,?,?)";
         var table =
-            ["rule", "type", "sourceIP", "sourcePort", "direction", "destinationIP", "destinationPort", "content", "collection_id","protocol",
-                req.body.type, req.body.sourceIP, req.body.sourcePort, req.body.direction, req.body.destinationIP, req.body.destinationPort, req.body.content, req.body.collection_id,req.body.protocol];
+            ["rule", "type", "sourceIP", "sourcePort", "direction", "destinationIP", "destinationPort", "content", "collection_id", "protocol",
+                req.body.type, req.body.sourceIP, req.body.sourcePort, req.body.direction, req.body.destinationIP, req.body.destinationPort, req.body.content, req.body.collection_id, req.body.protocol];
         query = mysql.format(query, table);
         connection.query(query, function (err, rows) {
             if (err) {
                 res.json({ "Error": true, "Message": "Error executing MySQL query!" });
-                console.log("Error !"+err);
+                console.log("Error !" + err);
             } else {
                 res.json({ "Error": false, "Message": "Rule added to collection " + req.body.collection_id + " !" });
             }
@@ -152,7 +167,7 @@ router.get('/rule/:id', function (req, res) {
         connection.query(query, function (err, rows) {
             if (err) {
                 res.json({ "Error": true, "Message": "Error executing MySQL query!" });
-                console.log("Error !"+err);
+                console.log("Error !" + err);
             } else {
                 res.json({ "Error": false, "Message": "Rule Updated !" });
             }
@@ -165,12 +180,40 @@ router.get('/rule/:id', function (req, res) {
         connection.query(query, function (err, rows) {
             if (err) {
                 res.json({ "Error": true, "Message": "Error executing MySQL query!" });
-                console.log("Error !"+err);
+                console.log("Error !" + err);
             } else {
                 res.json({ "Error": false, "Message": "Deleted the rule with id = " + req.params.id });
             }
         });
     })
+
+
+
+//   File upload routeupload.single('CSVFILE')
+router.get('/upload', function (req, res) {
+    res.end('Just a simple NG2 File Uploader Endpoint');
+})
+    .post('/upload', function (req, res) {
+        console.log('Arrived at uploading!');
+        var upload = multer({
+            storage: storage,
+            fileFilter: function (req, file, callback) {
+                var ext = path.extname(file.originalname);
+                if (ext !== '.csv') {
+                    return callback(new Error('Only csv file allowed!'), false);
+                }
+                callback(null, true)
+            }
+        }).single('CSVFILE')
+        upload(req, res, function (err) {
+            if (err) {
+                console.log(err.toString());
+                return res.json(err.toString());
+            }
+            console.log("Uploaded !");
+            res.json('File uploaded !');
+        })
+    });
 
 module.exports = router;
 

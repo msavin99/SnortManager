@@ -8,7 +8,7 @@
       <p class="card-text">Uploaded on : {{ rulesCollection.creationDate }}</p>
       <!--Add new rule button-->
       <button class="btn btn-success" id="addRule" (click)="insertRule()">
-        <span class="fa fa-plus"></span> Insert new rule
+        <span class="fa fa-plus"></span> <b>Insert new rule</b>
       </button>
       <!--Render table-->
       <table class="table">
@@ -39,12 +39,10 @@
               <td>{{ rule.destinationPort}}</td>
               <td>{{ rule.content}}</td>
               <td>
-                <button class="btn btn-primary btn-xs" alt="Edit" (click)='[selectRuleForEdit(rule.id)]'>
-                <span class="fa fa-pencil"></span>
-              </button>
-                <button class="btn btn-danger btn-xs" alt="Delete" (click)='modal.showChildModal(rule.id)'>
-                <span class="fa fa-trash"></span>
-              </button>
+                <div class="btn-group btn-group-justified inline mx-auto">
+                  <button class="btn btn-primary btn-xs" alt="Edit" (click)='[selectRuleForEdit(rule.id)]'><span class="fa fa-pencil"></span></button>
+                  <button class="btn btn-danger btn-xs" alt="Delete" (click)='modal.showChildModal(rule.id)'><span class="fa fa-trash"></span></button>
+                </div>
               </td>
             </ng-container>
             <!-- If it's editable , show the editable template -->
@@ -68,7 +66,7 @@
               <td><input class="form-control" [(ngModel)]='rule.sourceIP'></td>
               <td><input class="form-control" [(ngModel)]='rule.sourcePort'></td>
               <td>
-                <select class="form-control" id="selectDirection" [(ngModel)]='rule.direction' >
+                <select class="form-control" id="selectDirection" [(ngModel)]='rule.direction'>
                   <option [ngValue]='0'>{{ directionToString(0) }}</option>
                   <option [ngValue]='1'>{{ directionToString(1) }}</option>
                   <option [ngValue]='2'>{{ directionToString(2) }}</option>
@@ -78,12 +76,10 @@
               <td><input class="form-control" [(ngModel)]='rule.destinationPort'></td>
               <td><textarea class="form-control" [(ngModel)]='rule.content'></textarea></td>
               <td>
-                <button class="btn btn-primary btn-xs" alt="Save" (click)='[saveRule()]'>
-                <span class="fa fa-floppy-o"></span>
-              </button>
-                <button class="btn btn-danger btn-xs" alt="Delete" (click)='modal.showChildModal(rule.id)'>
-                <span class="fa fa-trash"></span>
-              </button>
+                <div class="btn-group btn-group-justified inline mx-auto">
+                  <button class="btn btn-primary btn-xs" alt="Save" (click)='[saveRule()]'><span class="fa fa-floppy-o"></span></button>
+                  <button class="btn btn-danger btn-xs" alt="Delete" (click)='modal.showChildModal(rule.id)'><span class="fa fa-trash"></span></button>
+                </div>
               </td>
             </ng-template>
           </tr>
