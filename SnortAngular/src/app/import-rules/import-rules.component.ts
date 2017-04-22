@@ -14,7 +14,8 @@ export class ImportRulesComponent implements OnInit {
 
   @ViewChild('uploadFinishedModal') public uploadFinishedModal: ModalDirective;
 
-  public uploader: FileUploader = new FileUploader({ url: 'http://localhost:8080/api/upload', itemAlias: 'CSVFILE', removeAfterUpload: true });
+  allowedMimeType = ['application/vnd.ms-excel','text/csv','text/comma-separated-values'];
+  public uploader: FileUploader = new FileUploader({ url: 'http://localhost:8080/api/upload', itemAlias: 'CSVFILE', removeAfterUpload: true, allowedMimeType: this.allowedMimeType });
   public hasBaseDropZoneOver: boolean = false;
   public hasAnotherDropZoneOver: boolean = false;
   constructor() { }
@@ -25,7 +26,7 @@ export class ImportRulesComponent implements OnInit {
 
   ngOnInit() {
     this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
-      console.log("Uploaded:", item, status);
+      console.log("Uploaded:", item, response, status);
     };
     this.uploader.onCompleteAll = () => {
       console.log("Completed all uploads!");

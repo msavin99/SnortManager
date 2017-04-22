@@ -30,6 +30,6 @@
     margin-right:auto;
 }
 
-.nv-file-over { background-color:#8c8c8c;} /* Default class applied to drop zones on over */
+.nv-file-over { background-color:#a8a8a8;} /* Default class applied to drop zones on over */
 .another-file-over-class { border: dotted 3px green; }
 html, body { height: 100%; }

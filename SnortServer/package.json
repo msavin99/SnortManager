@@ -7,6 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/drakeRizz/SnortManager"
+  },
   "author": "Trifu Alexandru",
   "license": "ISC",
   "dependencies": {
@@ -14,6 +18,7 @@
     "express": "^4.15.2",
     "fs": "0.0.1-security",
     "multer": "^1.3.0",
-    "mysql": "^2.13.0"
+    "mysql": "^2.13.0",
+    "nodecsv": "^1.1.0"
   }
 }

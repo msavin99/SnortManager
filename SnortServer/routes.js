@@ -6,12 +6,15 @@ var router = express.Router();          // get an instance of the express router
 //Declare uploader
 var multer = require('multer');
 var fs = require('fs');
-var path = require('path')
+var path = require('path');
+// Declare CSV Reader
+var readCSV = require('nodecsv').readCSV;
+
 // Declare the multer storage for uploading and renaming the files
 var storage = multer.diskStorage({
     destination: 'uploads/',
     filename: function (req, file, cb) {
-        console.log("Naming the file: "+file.originalname+"...");
+        console.log("Naming the file: " + file.originalname + "...");
         cb(null, file.originalname + '-' + Date.now() + '.csv')
     },
 })
@@ -35,8 +38,8 @@ router.get('/', function (req, res) {
     res.json({ message: 'Works! Welcome to the API!' });
 })
 
-// API for getting Collections of Rules
-//Get all RulesCollections joined by their Rules
+//  API for getting Collections of Rules
+//  Get all RulesCollections joined by their Rules
 router.get('/rules', function (req, res) {
     connection.query('SELECT * FROM snortdatabase.rules_collection;',
         function (err, rows, fields) {
@@ -207,14 +210,88 @@ router.get('/upload', function (req, res) {
         }).single('CSVFILE')
         upload(req, res, function (err) {
             if (err) {
-                console.log(err.toString());
+                console.log("File Not Uploaded ! Error:", err.toString());
                 return res.json(err.toString());
             }
-            console.log("Uploaded !");
-            res.json('File uploaded !');
+            console.log("Uploaded! File Path:", req.file.path);
+            ProcessFile(req.file.path, req.file.originalname);
+            res.json({ "uploaded_file": req.file });
         })
     });
 
+function ProcessFile(csvFilePath, originalFileName) {
+    readCSV(csvFilePath, function (error, data) {
+        //The callback returns an error or the readed data :)
+        if (error) {
+            console.log("File could not be processed!", err);
+            return;
+        }
+        //Get corresponding column id's to parse
+        indicatorTitleColumnId = data[0].findIndex((col) => col == 'indicator_title')
+        sourceColumnId = data[0].findIndex((col) => col == 'value')
+
+        if (indicatorTitleColumnId == -1 || sourceColumnId == -1) {
+            console.log("Invalid .CSV Snort Format !");
+            return;
+        }
+        // Now process the obtained info from the CSV file
+        var rulesList = [];
+        for (i = 1; i < data.length; i++) {
+            if (!(data[i][sourceColumnId] == null || data[i][indicatorTitleColumnId] == null))
+                rulesList.push({ "source": data[i][sourceColumnId], "indicator": data[i][indicatorTitleColumnId] })
+        }
+        newDBRulesCollection(originalFileName, rulesList);
+    });
+}
+
+function newDBRulesCollection(collectionName, rulesList) {
+    //Create new rule collection in the database:
+    var date = new Date().toLocaleDateString("en-US");
+    var query = "INSERT INTO ?? (?? , ?? , ??) VALUES (? , STR_TO_DATE(?,'%m/%d/%Y') , ?)";
+    var table =
+        ["rules_collection", "fileName", "creationDate", "description", collectionName, date, "Edit this description!"];
+    query = mysql.format(query, table);
+    connection.query(query, function (err, rows) {
+        if (err) {
+            console.log("Error !" + err);
+        } else {
+            console.log("Rule Collection Created ! ", collectionName);
+            insertRulesInCollectionIdByName(collectionName, rulesList);
+        }
+    });
+}
+function insertRulesInCollectionIdByName(collectionName, rulesList) {
+    var query = "SELECT * FROM ?? WHERE ?? = ?";
+    var table = ["rules_collection", "fileName", collectionName];
+    query = mysql.format(query, table);
+    connection.query(query, function (err, rows) {
+        if (err) {
+            console.log("Could not get collection id by name ! Error :" + err);
+        } else {
+            console.log("Collection " + collectionName + " has id " + rows[0].collection_id);
+            idOfCollectionCreated = rows[0].collection_id;
+            if (idOfCollectionCreated != -1) {
+                for (i = 0; i < rulesList.length; i++) {
+                    insertRuleInDBCollection(idOfCollectionCreated, rulesList[i]);
+                }
+            }
+        }
+    });
+}
+function insertRuleInDBCollection(collection_id, ruleToInsert) {
+    var query = "INSERT INTO ?? (??,??,??,??,??,??,??,??,??) VALUES (?,?,?,?,?,?,?,?,?)";
+    var table =
+        ["rule", "type", "sourceIP", "sourcePort", "direction", "destinationIP", "destinationPort", "content", "collection_id", "protocol",
+            0, ruleToInsert.source, "any", 0, "any", "any", ruleToInsert.indicator, collection_id, 0];
+    query = mysql.format(query, table);
+    connection.query(query, function (err, rows) {
+        if (err) {
+            console.log("Error !" + err);
+        } else {
+            console.log("Added rule to collection " + collection_id + " # " + ruleToInsert.source);
+        }
+    });
+}
 module.exports = router;
 
 
