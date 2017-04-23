@@ -1,0 +1,21 @@
+<div class="container">
+  <button class="btn btn-primary btn-xs" (click)="goBack()"><span class="fa fa-arrow-left"></span> Back</button>
+  <h1 class="text-center">Search results for : <i>'{{ searchedString }}'</i> </h1>
+  <div *ngIf="filteredRuleCollections && filteredRuleCollections.length>0" class="alert alert-success" role="alert" style="margin-top:2em">
+    Found <strong>{{filteredRuleCollections.length}}</strong> pack of rules containing the searched keyword in the description!
+  </div>
+  <div *ngFor="let rulesPackage of filteredRuleCollections" class="card card-outline rules-card">
+    <div class="card-header">{{ rulesPackage.fileName }}</div>
+    <div class="card-block">
+      <h4 class="card-title">{{ rulesPackage.fileName }}</h4>
+      <p class="card-text">Description : {{ rulesPackage.description }}</p>
+      <p class="card-text">Uploaded on : {{ rulesPackage.creationDate }}</p>
+      <button class="btn btn-success" (click)='[goToRulesDetails(rulesPackage.collection_id)]'>Open Rules</button>
+      <button class="btn btn-danger" (click)='modal.showChildModal(rulesPackage.collection_id)'>Delete file from History</button>
+    </div>
+  </div>
+  <div *ngIf="filteredRuleCollections && filteredRuleCollections.length==0" class="alert alert-danger" role="alert" style="margin-top:5em">
+    <strong>Sorry</strong> , there was no pack of rules containing the searched keyword in the description !
+  </div>
+
+</div>

@@ -16,3 +16,6 @@ textarea, select{
     float:right;
     margin:10px;
 }
+table{
+    font-size:0.8em;
+}

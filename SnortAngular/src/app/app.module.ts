@@ -13,6 +13,7 @@ import { RulesService } from './rules.service';
 import { ModalDialogComponent } from './modal-dialog/modal-dialog.component';
 import { ImportRulesComponent } from './import-rules/import-rules.component';
 import { FileDropDirective, FileSelectDirective } from 'ng2-file-upload';
+import { SearchComponent } from './search/search.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { FileDropDirective, FileSelectDirective } from 'ng2-file-upload';
     ModalDialogComponent,
     ImportRulesComponent,
     FileDropDirective,
-    FileSelectDirective
+    FileSelectDirective,
+    SearchComponent
   ],
   imports: [
     BrowserModule,
@@ -34,7 +36,8 @@ import { FileDropDirective, FileSelectDirective } from 'ng2-file-upload';
       { path: 'home', component: HomeComponent },
       { path: 'rules/:id', component: RulesComponent },
       { path: 'history', component: HistoryComponent },
-      { path: 'import', component: ImportRulesComponent }
+      { path: 'import', component: ImportRulesComponent },
+      { path: 'search/:q', component: SearchComponent }
     ]),
     BsDropdownModule.forRoot(),
     ModalModule.forRoot()
