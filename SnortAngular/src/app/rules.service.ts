@@ -14,7 +14,7 @@ export class RulesService {
 
   //  Declare headers
   private headers = new Headers({ 'Content-Type': 'application/json' });
-
+  
   constructor(private http: Http) { }
 
   //  METHODS DECLARATIONS

@@ -39,7 +39,7 @@ router.get('/', function (req, res) {
 })
 
 //  API for getting Collections of Rules
-//  Get all RulesCollections joined by their Rules
+//  Get all RulesCollections 
 router.get('/rules', function (req, res) {
     connection.query('SELECT * FROM snortdatabase.rules_collection;',
         function (err, rows, fields) {
@@ -125,7 +125,7 @@ router.post('/rules', function (req, res) {
 
 
 //ROUTES FOR RULES TABLE
-//Gets a rule by it's ID
+//Get a rule by it's ID
 router.get('/rule/:id', function (req, res) {
     var query = "SELECT * FROM ?? WHERE ?? = ?";
     var table = ["rule", "id", req.params.id];

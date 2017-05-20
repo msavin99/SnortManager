@@ -4,7 +4,7 @@ import { RulesService } from '../rules.service'
 import { ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
 import 'rxjs/add/operator/switchMap';
-
+import 'rxjs/Rx';
 @Component({
   selector: 'app-rules',
   templateUrl: './rules.component.html',
@@ -56,16 +56,30 @@ export class RulesComponent implements OnInit {
         return "TCP";
       case Protocol.UDP:
         return "UDP";
+      case Protocol.ICMP:
+        return "ICMP";
+      case Protocol.IP:
+        return "IP";
     }
   }
   typeToString(type: Type): string {
     switch (type) {
       case Type.Alert:
         return "Alert";
-      case Type.Info:
-        return "Info";
-      case Type.Warning:
-        return "Warning";
+      case Type.Activate:
+        return "Activate";
+      case Type.Drop:
+        return "Drop";
+      case Type.Dynamic:
+        return "Dynamic";
+      case Type.Log:
+        return "Log";
+      case Type.Pass:
+        return "Pass";
+      case Type.Reject:
+        return "Reject";
+      case Type.SDrop:
+        return "SDrop";
     }
   }
 
@@ -118,7 +132,29 @@ export class RulesComponent implements OnInit {
         console.log("Rule " + id + " was deleted succesfully!");
       });
   }
+  ExportRulesCSV() {
+    let tempRules: Rule[] = [];
+    for(let rule of this.rules){
+        var tmpRule = new Rule(rule.collection_id);
+        tmpRule.content = rule.content;
+        tmpRule.destinationIP = rule.destinationIP;
+        tmpRule.destinationPort = rule.destinationPort;
+        tmpRule.direction = rule.direction;
+        tmpRule.id = rule.id;
+        tmpRule.protocol = rule.protocol;
+        tmpRule.sourceIP = rule.sourceIP;
+        tmpRule.sourcePort = rule.sourcePort;
+        tempRules.push(tmpRule);
+    }
+    console.log("Exporting .rules Snort file !");
+    var blob = new Blob(tempRules,{type: 'text'});
+    var url = window.URL.createObjectURL(blob);
+    window.open(url);
+  }
 
+  ImportInSnort(){
+    console.log("Importing into Snort !");
+  }
   goBack(): void {
     this.location.back();
   }
