@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http } from '@angular/http';
+import { Headers, Http, ResponseContentType } from '@angular/http';
 import { RulesCollection, Rule } from './rules';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/toPromise';
@@ -14,7 +14,7 @@ export class RulesService {
 
   //  Declare headers
   private headers = new Headers({ 'Content-Type': 'application/json' });
-  
+
   constructor(private http: Http) { }
 
   //  METHODS DECLARATIONS
@@ -31,12 +31,12 @@ export class RulesService {
     
   }
   */
-  deleteRulePack(collection_id : number) : Promise<void>{
-    console.log("API called for deleting Pack with collection_id:"+collection_id);
-    const url =`${this.rulesCollectionsDetailsUrl}/${collection_id}`;
-    return this.http.delete(url, {headers:this.headers})
+  deleteRulePack(collection_id: number): Promise<void> {
+    console.log("API called for deleting Pack with collection_id:" + collection_id);
+    const url = `${this.rulesCollectionsDetailsUrl}/${collection_id}`;
+    return this.http.delete(url, { headers: this.headers })
       .toPromise()
-      .then(()=>null)
+      .then(() => null)
       .catch(this.handleError);
   }
   //  Get the details of a rules package with specific id
@@ -56,8 +56,18 @@ export class RulesService {
       .catch(this.handleError);
   }
 
+  downloadRulesFile(collection_id: number): Promise<Blob> {
+    // URL SHOULD BE 'http://localhost:8080/api/collection' 
+    // TODO implement in server
+    const url = `${this.collectionsUrl}/download/${collection_id}`;
+    return this.http.get(url, { responseType: ResponseContentType.Blob })
+      .toPromise()
+      .then(response => response.blob())
+      .catch(this.handleError);
+  }
+
   //  Delete a rule
-  deleteRule(id: number) : Promise<void> {
+  deleteRule(id: number): Promise<void> {
     console.log("API called for delete rule! Id:" + id);
     const url = `${this.ruleUrl}/${id}`;
     return this.http.delete(url, { headers: this.headers })
@@ -76,11 +86,11 @@ export class RulesService {
       .catch(this.handleError);
   }
   //  Insert new rule
-  insertRule(newRule: Rule): Promise<void>{
+  insertRule(newRule: Rule): Promise<void> {
     console.log("API called for inserting new rule !");
-    return this.http.post(this.ruleUrl,JSON.stringify(newRule),{headers: this.headers})
+    return this.http.post(this.ruleUrl, JSON.stringify(newRule), { headers: this.headers })
       .toPromise()
-      .then(()=> null)
+      .then(() => null)
       .catch(this.handleError);
   }
 

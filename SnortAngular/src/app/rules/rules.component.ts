@@ -132,24 +132,11 @@ export class RulesComponent implements OnInit {
         console.log("Rule " + id + " was deleted succesfully!");
       });
   }
-  ExportRulesCSV() {
-    let tempRules: Rule[] = [];
-    for(let rule of this.rules){
-        var tmpRule = new Rule(rule.collection_id);
-        tmpRule.content = rule.content;
-        tmpRule.destinationIP = rule.destinationIP;
-        tmpRule.destinationPort = rule.destinationPort;
-        tmpRule.direction = rule.direction;
-        tmpRule.id = rule.id;
-        tmpRule.protocol = rule.protocol;
-        tmpRule.sourceIP = rule.sourceIP;
-        tmpRule.sourcePort = rule.sourcePort;
-        tempRules.push(tmpRule);
-    }
-    console.log("Exporting .rules Snort file !");
-    var blob = new Blob(tempRules,{type: 'text'});
-    var url = window.URL.createObjectURL(blob);
-    window.open(url);
+
+  ExportRulesCSV(){
+    return this.rulesService.downloadRulesFile(this.route.params['id']);
+    // var url = window.URL.createObjectURL(blob);
+    // window.open(url);
   }
 
   ImportInSnort(){
