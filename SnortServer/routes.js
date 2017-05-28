@@ -10,6 +10,9 @@ var path = require('path');
 // Declare CSV Reader
 var readCSV = require('nodecsv').readCSV;
 
+// Declare file writer using "writer" npm package.
+var writeFile = require('write');
+
 // Declare the multer storage for uploading and renaming the files
 var storage = multer.diskStorage({
     destination: 'uploads/',
@@ -122,7 +125,39 @@ router.post('/rules', function (req, res) {
             }
         })
     })
+    // Create a .rules file which is then returned as response for the frontEnd to download.
+    .get('/collection/download/:collection_id', function (req, res) {
+        var query = "SELECT * FROM ?? JOIN ?? USING (??) WHERE ?? = ?";
+        var table = ["rule", "rules_collection", "collection_id", "collection_id", req.params.collection_id];
+        query = mysql.format(query, table);
+        connection.query(query, function (err, rows) {
+            if (err) {
+                res.json({ "Error": true, "Message": "Error executing MySQL query" })
+                console.log("Error !" + err);
+            } else {
+                res.sendFile(SaveRulesFile(rows),{root:"uploads/"});
+                console.log("Saved .rules file & sent to client !");
+            }
+        })
+    })
 
+//Function to save the .rules file from given rows.
+function SaveRulesFile(rows) {
+    var fileContent = '';
+    for (var row of rows) {
+        fileContent +=
+            row["type"] + " " + row["sourceIP"] + " " +
+            row["sourcePort"] + " " + row["direction"] + " " +
+            row["destionationIP"] + " " + row["destinationPort"] + " " +
+            row["content"] + "\n";
+    }
+    var fileName = rows[0]["fileName"];
+
+    fileName = fileName.substring(0, fileName.length - 4) + '.rules';
+    var pathOfUploadedFile =  fileName;
+    writeFile.sync("uploads/"+pathOfUploadedFile, fileContent.toString());
+    return pathOfUploadedFile;
+}
 
 //ROUTES FOR RULES TABLE
 //Get a rule by it's ID
@@ -191,7 +226,6 @@ router.get('/rule/:id', function (req, res) {
     })
 
 
-
 //   File upload routeupload.single('CSVFILE')
 router.get('/upload', function (req, res) {
     res.end('Just a simple NG2 File Uploader Endpoint');
@@ -243,7 +277,6 @@ function ProcessFile(csvFilePath, originalFileName) {
         newDBRulesCollection(originalFileName, rulesList);
     });
 }
-
 function newDBRulesCollection(collectionName, rulesList) {
     //Create new rule collection in the database:
     var date = new Date().toLocaleDateString("en-US");

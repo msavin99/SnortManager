@@ -40,7 +40,7 @@ import { SearchComponent } from './search/search.component';
       { path: 'search/:q', component: SearchComponent }
     ]),
     BsDropdownModule.forRoot(),
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
   ],
   providers: [RulesService],
   bootstrap: [AppComponent]

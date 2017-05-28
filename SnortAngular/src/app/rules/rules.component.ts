@@ -3,6 +3,7 @@ import { Rule, RulesCollection, Type, Protocol, Direction } from '../rules';
 import { RulesService } from '../rules.service'
 import { ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
+import { saveAs } from "file-saver";
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/Rx';
 @Component({
@@ -134,9 +135,13 @@ export class RulesComponent implements OnInit {
   }
 
   ExportRulesCSV(){
-    return this.rulesService.downloadRulesFile(this.route.params['id']);
-    // var url = window.URL.createObjectURL(blob);
-    // window.open(url);
+    // call the service downloadRulesFile method with the collection_id parameter.
+    return this.rulesService.downloadRulesFile(this.rulesCollection.collection_id)
+      .subscribe(result => {
+        console.log("Yuppi file result back for downloading the rules !")
+        saveAs(result,this.rulesCollection.fileName.substring(0, this.rulesCollection.fileName.length-4)+".rules");
+      });
+
   }
 
   ImportInSnort(){

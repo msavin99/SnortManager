@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http, ResponseContentType } from '@angular/http';
+import { Headers, Http, ResponseContentType, RequestOptions } from '@angular/http';
 import { RulesCollection, Rule } from './rules';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/toPromise';
@@ -56,13 +56,12 @@ export class RulesService {
       .catch(this.handleError);
   }
 
-  downloadRulesFile(collection_id: number): Promise<Blob> {
-    // URL SHOULD BE 'http://localhost:8080/api/collection' 
-    // TODO implement in server
+  downloadRulesFile(collection_id: number): Observable<Blob> {
+    // URL SHOULD BE 'http://localhost:8080/api/collection/download/id' 
+    let options = new RequestOptions({responseType : ResponseContentType.Blob });
     const url = `${this.collectionsUrl}/download/${collection_id}`;
-    return this.http.get(url, { responseType: ResponseContentType.Blob })
-      .toPromise()
-      .then(response => response.blob())
+    return this.http.get(url, options)
+      .map(response => response.blob())
       .catch(this.handleError);
   }
 
