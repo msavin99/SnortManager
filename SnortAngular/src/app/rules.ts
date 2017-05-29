@@ -24,13 +24,20 @@ export class RulesCollection {
 
 export enum Type {
     Alert = 0,
-    Warning = 1,
-    Info = 2
+    Log = 1,
+    Pass = 2,
+    Activate = 3,
+    Dynamic = 4,
+    Drop = 5,
+    Reject = 6,
+    SDrop = 7
 }
 
 export enum Protocol {
     TCP = 0,
-    UDP = 1
+    UDP = 1,
+    ICMP = 2,
+    IP = 3
 }
 export enum Direction {
     Right = 0,

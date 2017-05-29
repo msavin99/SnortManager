@@ -3,8 +3,9 @@ import { Rule, RulesCollection, Type, Protocol, Direction } from '../rules';
 import { RulesService } from '../rules.service'
 import { ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
+import { saveAs } from "file-saver";
 import 'rxjs/add/operator/switchMap';
-
+import 'rxjs/Rx';
 @Component({
   selector: 'app-rules',
   templateUrl: './rules.component.html',
@@ -56,16 +57,30 @@ export class RulesComponent implements OnInit {
         return "TCP";
       case Protocol.UDP:
         return "UDP";
+      case Protocol.ICMP:
+        return "ICMP";
+      case Protocol.IP:
+        return "IP";
     }
   }
   typeToString(type: Type): string {
     switch (type) {
       case Type.Alert:
         return "Alert";
-      case Type.Info:
-        return "Info";
-      case Type.Warning:
-        return "Warning";
+      case Type.Activate:
+        return "Activate";
+      case Type.Drop:
+        return "Drop";
+      case Type.Dynamic:
+        return "Dynamic";
+      case Type.Log:
+        return "Log";
+      case Type.Pass:
+        return "Pass";
+      case Type.Reject:
+        return "Reject";
+      case Type.SDrop:
+        return "SDrop";
     }
   }
 
@@ -119,6 +134,19 @@ export class RulesComponent implements OnInit {
       });
   }
 
+  ExportRulesCSV(){
+    // call the service downloadRulesFile method with the collection_id parameter.
+    return this.rulesService.downloadRulesFile(this.rulesCollection.collection_id)
+      .subscribe(result => {
+        console.log("Yuppi file result back for downloading the rules !")
+        saveAs(result,this.rulesCollection.fileName.substring(0, this.rulesCollection.fileName.length-4)+".rules");
+      });
+
+  }
+
+  ImportInSnort(){
+    console.log("Importing into Snort !");
+  }
   goBack(): void {
     this.location.back();
   }
