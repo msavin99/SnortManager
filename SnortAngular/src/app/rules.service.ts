@@ -56,6 +56,13 @@ export class RulesService {
       .catch(this.handleError);
   }
 
+  importIntoSnort(collection_id:number): Observable<boolean>{
+    // URL SHOULD BE 'http://localhost:8080/api/collection/import/id' 
+    const url = `${this.collectionsUrl}/import/${collection_id}`;
+    return this.http.get(url)
+      .map(response => response.json.toString().indexOf("success") != -1)
+      .catch(this.handleError);
+  }
   downloadRulesFile(collection_id: number): Observable<Blob> {
     // URL SHOULD BE 'http://localhost:8080/api/collection/download/id' 
     let options = new RequestOptions({responseType : ResponseContentType.Blob });

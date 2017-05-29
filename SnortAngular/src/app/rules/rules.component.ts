@@ -146,6 +146,12 @@ export class RulesComponent implements OnInit {
 
   ImportInSnort(){
     console.log("Importing into Snort !");
+    this.rulesService.importIntoSnort(this.rulesCollection.collection_id)
+      .subscribe(result => {
+        console.log("Rules were imported into snort !");
+        //==========================
+        //Maybe show a popup here ?
+      })
   }
   goBack(): void {
     this.location.back();

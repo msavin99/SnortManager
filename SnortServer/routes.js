@@ -135,12 +135,78 @@ router.post('/rules', function (req, res) {
                 res.json({ "Error": true, "Message": "Error executing MySQL query" })
                 console.log("Error !" + err);
             } else {
-                res.sendFile(SaveRulesFile(rows),{root:"uploads/"});
+                res.sendFile(SaveRulesFile(rows), { root: "uploads/" });
                 console.log("Saved .rules file & sent to client !");
             }
         })
     })
+    // Create a .rules file which is then
+    // copied to /etc/snort &
+    // the snort rules file is modified to link to this file.
+    .get('/collection/import/:collection_id', function (req, res) {
+        var query = "SELECT * FROM ?? JOIN ?? USING (??) WHERE ?? = ?";
+        var table = ["rule", "rules_collection", "collection_id", "collection_id", req.params.collection_id];
+        query = mysql.format(query, table);
+        connection.query(query, function (err, rows) {
+            if (err) {
+                res.json({ "Error": true, "Message": "Error executing MySQL query" })
+                console.log("Error !" + err);
+            } else {
+                //Here we should do some REAL work.
+                // 1.Save the file
+                var fileName = SaveRulesFile(rows);
+                // 2. Get Acces & Copy the file
+                fs.chmod('/etc/snort/rules/', 777, (err) => {
+                    //3. Copy the file
+                    if(err) res.json({ "Error": true, "Message": err });
+                    copyFile('uploads/' + fileName, '/etc/snort/rules/' + fileName, (err) => {
+                        if (err) {
+                            res.json({ "Error": true, "Message": err });
+                            console.log(err);
+                        } else {
+                            //4. Get Permission for /etc/snort/snort.conf
+                            //ERROR HERE , TO BE FIXED
+                            fs.chmod('/etc/snort/snort.conf',777,(err)=>{
+                                if(err) {
+                                    res.json({ "Error": true, "Message": err });
+                                }
+                                else{
+                                    AddRulesToSnortConfigFile(fileName);
+                                }
+                            })
+                            
+                        }
+                    })
+                })
 
+            }
+        })
+    })
+
+function AddRulesToSnortConfigFile(fileName) {
+    //4. Add the new file in etc/snort/snort.conf
+    fs.readFile('/etc/snort/snort.conf', 'utf8', (err, data) => {
+        if (err) {
+            res.json({ "Error": true, "Message": err });
+            console.log(err);
+        } else {
+            // 5. add the new include $RULE_PATH/fileName.rules in snort.conf
+            data = data.replace("# site specific rules",
+                "# site specific rules\n " +
+                "include $RULE_PATH/" + fileName);
+            fs.writeFile('/etc/snort/snort.conf', data, (err) => {
+                if (err) {
+                    console.log(err);
+                    res.json({ "Error": true, "Message": err });
+                } else {
+                    console.log("Saved .rules file in /etc/snort/rules/" + fileName);
+                    res.json({ "Error": false, "Message": "success" });
+                }
+            })
+        }
+
+    })
+}
 //Function to save the .rules file from given rows.
 function SaveRulesFile(rows) {
     var fileContent = '';
@@ -154,8 +220,8 @@ function SaveRulesFile(rows) {
     var fileName = rows[0]["fileName"];
 
     fileName = fileName.substring(0, fileName.length - 4) + '.rules';
-    var pathOfUploadedFile =  fileName;
-    writeFile.sync("uploads/"+pathOfUploadedFile, fileContent.toString());
+    var pathOfUploadedFile = fileName;
+    writeFile.sync("uploads/" + pathOfUploadedFile, fileContent.toString());
     return pathOfUploadedFile;
 }
 
@@ -325,6 +391,31 @@ function insertRuleInDBCollection(collection_id, ruleToInsert) {
         }
     });
 }
+
+function copyFile(source, target, cb) {
+    var cbCalled = false;
+
+    var rd = fs.createReadStream(source);
+    rd.on("error", function (err) {
+        done(err);
+    });
+    var wr = fs.createWriteStream(target);
+    wr.on("error", function (err) {
+        done(err);
+    });
+    wr.on("close", function (ex) {
+        done();
+    });
+    rd.pipe(wr);
+
+    function done(err) {
+        if (!cbCalled) {
+            cb(err);
+            cbCalled = true;
+        }
+    }
+}
+
 module.exports = router;
 
 
