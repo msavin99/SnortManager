@@ -158,54 +158,54 @@ router.post('/rules', function (req, res) {
                 // 2. Get Acces & Copy the file
                 fs.chmod('/etc/snort/rules/', 777, (err) => {
                     //3. Copy the file
-                    if(err) res.json({ "Error": true, "Message": err });
-                    copyFile('uploads/' + fileName, '/etc/snort/rules/' + fileName, (err) => {
-                        if (err) {
-                            res.json({ "Error": true, "Message": err });
-                            console.log(err);
-                        } else {
-                            //4. Get Permission for /etc/snort/snort.conf
-                            //ERROR HERE , TO BE FIXED
-                            fs.chmod('/etc/snort/snort.conf',777,(err)=>{
-                                if(err) {
-                                    res.json({ "Error": true, "Message": err });
-                                }
-                                else{
-                                    AddRulesToSnortConfigFile(fileName);
-                                }
-                            })
-                            
-                        }
-                    })
+                    if (err) {
+                        res.json({ "Error": true, "Message": err });
+                        console.log("Err while chmoding");
+                    } else
+                        copyFile('uploads/' + fileName, '/etc/snort/rules/' + fileName, (err) => {
+                            if (err) {
+                                res.json({ "Error": true, "Message": err });
+                                console.log("Copy File Error:" + err);
+                            } else {
+                                //4. Get Permission for /etc/snort/snort.conf
+                                AddRulesToSnortConfigFile(fileName, (err, result) => {
+                                    if (result === true) {
+                                        res.json({ "Error": false, "Message": "succes" });
+                                        console.log("Success! Rules were imported in Snort !");
+                                    } else {
+                                        res.json({ "Error": true, "Message": err });
+                                        console.log("/etc/snort/snort.conf could not be edited:" + err);
+                                    }
+                                });
+                            }
+                        })
                 })
 
             }
         })
     })
 
-function AddRulesToSnortConfigFile(fileName) {
+function AddRulesToSnortConfigFile(fileName, cb) {
     //4. Add the new file in etc/snort/snort.conf
     fs.readFile('/etc/snort/snort.conf', 'utf8', (err, data) => {
         if (err) {
-            res.json({ "Error": true, "Message": err });
-            console.log(err);
+            console.log("Error while reading snort.conf file !");
+            return cb(err,false);
         } else {
             // 5. add the new include $RULE_PATH/fileName.rules in snort.conf
             data = data.replace("# site specific rules",
-                "# site specific rules\n " +
+                "# site specific rules\n" +
                 "include $RULE_PATH/" + fileName);
             fs.writeFile('/etc/snort/snort.conf', data, (err) => {
                 if (err) {
-                    console.log(err);
-                    res.json({ "Error": true, "Message": err });
+                    console.log("Error while writing back to snort.conf");
+                    return cb(err,false);
                 } else {
-                    console.log("Saved .rules file in /etc/snort/rules/" + fileName);
-                    res.json({ "Error": false, "Message": "success" });
+                    return cb(err,true);
                 }
             })
         }
-
-    })
+    });
 }
 //Function to save the .rules file from given rows.
 function SaveRulesFile(rows) {

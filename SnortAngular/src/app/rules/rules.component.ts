@@ -148,7 +148,10 @@ export class RulesComponent implements OnInit {
     console.log("Importing into Snort !");
     this.rulesService.importIntoSnort(this.rulesCollection.collection_id)
       .subscribe(result => {
+        if(result)
         console.log("Rules were imported into snort !");
+        else
+        console.log("There was an error while importing rules into snort !");
         //==========================
         //Maybe show a popup here ?
       })

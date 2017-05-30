@@ -60,7 +60,7 @@ export class RulesService {
     // URL SHOULD BE 'http://localhost:8080/api/collection/import/id' 
     const url = `${this.collectionsUrl}/import/${collection_id}`;
     return this.http.get(url)
-      .map(response => response.json.toString().indexOf("success") != -1)
+      .map(response => response.json().Message === "succes")
       .catch(this.handleError);
   }
   downloadRulesFile(collection_id: number): Observable<Blob> {
