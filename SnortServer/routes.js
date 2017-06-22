@@ -10,6 +10,9 @@ var path = require('path');
 // Declare CSV Reader
 var readCSV = require('nodecsv').readCSV;
 
+// DNS to get the URL to IP functions
+var dns = require('dns');
+
 // Declare file writer using "writer" npm package.
 var writeFile = require('write');
 
@@ -210,12 +213,15 @@ function AddRulesToSnortConfigFile(fileName, cb) {
 //Function to save the .rules file from given rows.
 function SaveRulesFile(rows) {
     var fileContent = '';
-    for (var row of rows) {
+    for (i = 0; i < rows.length; i++) {
+        row = rows[i];
+        var sid = 1000001 + i;
+        var regex = /"/g;
         fileContent +=
             typeToString(row["type"]) + " " + protocolToString(row["protocol"]) + " " + row["sourceIP"] + " " +
             row["sourcePort"] + " " + directionToString(row["direction"]) + " " +
             row["destinationIP"] + " " + row["destinationPort"] + " " +
-            row["content"] + "\n";
+            "(msg:\"" + row["content"].replace(regex, "'") + "\"; sid:" + sid + ";)" + "\n";
     }
     var fileName = rows[0]["fileName"];
 
@@ -371,7 +377,22 @@ function insertRulesInCollectionIdByName(collectionName, rulesList) {
             idOfCollectionCreated = rows[0].collection_id;
             if (idOfCollectionCreated != -1) {
                 for (i = 0; i < rulesList.length; i++) {
-                    insertRuleInDBCollection(idOfCollectionCreated, rulesList[i]);
+                    var getIP = (rule, callback) => {
+                        return dns.lookup(rule.source, (err, address, family) => {
+                            if (err) {
+                                console.log("DNS LOOKUP " + err);
+                            }
+                            else {
+                                console.log("URL " + rule.source + " has IP Address " + address);
+                                callback(rule,address);
+                            }
+                        });
+                    };
+                    var replaceAndInsert = function (givenRule, address) {
+                        givenRule.source = address;
+                        insertRuleInDBCollection(idOfCollectionCreated, givenRule);
+                    }
+                    getIP(rulesList[i], replaceAndInsert);
                 }
             }
         }
@@ -419,43 +440,41 @@ function copyFile(source, target, cb) {
 function directionToString(direction) {
     switch (direction) {
         case 0:
-            return "<-";
-        case 1:
             return "->";
-        case 2:
-            return "<->";
+        case 1:
+            return "<>";
     }
 }
 function protocolToString(protocol) {
     switch (protocol) {
         case 0:
-            return "TCP";
+            return "tcp";
         case 1:
-            return "UDP";
+            return "udp";
         case 2:
-            return "ICMP";
+            return "icmp";
         case 3:
-            return "IP";
+            return "ip";
     }
 }
 function typeToString(type) {
     switch (type) {
         case 0:
-            return "Alert";
+            return "alert";
         case 1:
-            return "Activate";
+            return "activate";
         case 2:
-            return "Drop";
+            return "drop";
         case 3:
-            return "Dynamic";
+            return "dynamic";
         case 4:
-            return "Log";
+            return "log";
         case 5:
-            return "Pass";
+            return "pass";
         case 6:
-            return "Reject";
+            return "reject";
         case 7:
-            return "SDrop";
+            return "sdrop";
     }
 }
 

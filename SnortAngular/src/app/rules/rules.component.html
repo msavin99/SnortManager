@@ -28,7 +28,7 @@
             <th> Direction </th>
             <th> Destionation IP </th>
             <th> Destionation Port </th>
-            <th> Content </th>
+            <th> MSG </th>
             <th> Actions </th>
           </tr>
         </thead>
@@ -82,7 +82,6 @@
                 <select class="form-control" id="selectDirection" [(ngModel)]='rule.direction'>
                   <option [ngValue]='0'>{{ directionToString(0) }}</option>
                   <option [ngValue]='1'>{{ directionToString(1) }}</option>
-                  <option [ngValue]='2'>{{ directionToString(2) }}</option>
                 </select>
               </td>
               <td><input class="form-control" [(ngModel)]='rule.destinationIP'></td>

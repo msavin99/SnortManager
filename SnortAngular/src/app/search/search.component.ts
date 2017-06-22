@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RulesService } from '../rules.service'
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { Rule, RulesCollection, Type, Protocol, Direction } from '../rules';
 
@@ -19,13 +19,13 @@ export class SearchComponent implements OnInit {
     private rulesService: RulesService,
     private route: ActivatedRoute,
     private location: Location,
+    private router: Router
   ) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.searchedString = params['q'];
-      this.rulesService.getAllRulesPacks()
-        .then(rules => this.filteredRuleCollections = rules.filter(rule => rule.description.toLowerCase().indexOf(this.searchedString.toLowerCase()) >= 0))
+      this.getFilteredRulesPack();
       /*
       .then( rules => {
           for(let ruleCollection of rules){
@@ -37,14 +37,28 @@ export class SearchComponent implements OnInit {
           
       });
     */
-  })
+    })
   }
   ngAfterViewInit() {
 
   }
-
+  getFilteredRulesPack(){
+    this.rulesService.getAllRulesPacks()
+        .then(rules => this.filteredRuleCollections = rules.filter(rule => rule.description.toLowerCase().indexOf(this.searchedString.toLowerCase()) >= 0))
+  }
   goBack() {
     this.location.back();
+  }
+
+  deleteItemById(id: number) {
+    this.rulesService.deleteRulePack(id).then(() => {
+      this.getFilteredRulesPack();
+      console.log("Rule pack with id: " + id + " was deleted succesfully!")
+    });
+  }
+
+  goToRulesDetails(id: number) {
+    this.router.navigate(['/rules', id])
   }
 
 }

@@ -41,6 +41,5 @@ export enum Protocol {
 }
 export enum Direction {
     Right = 0,
-    Left = 1,
-    Both = 2
+    Both = 1
 }

@@ -17,5 +17,7 @@
   <div *ngIf="filteredRuleCollections && filteredRuleCollections.length==0" class="alert alert-danger" role="alert" style="margin-top:5em">
     <strong>Sorry</strong> , there was no pack of rules containing the searched keyword in the description !
   </div>
-
 </div>
+
+<!--Just the modal dialog-->
+<modal-dialog #modal [parent]='this'></modal-dialog>

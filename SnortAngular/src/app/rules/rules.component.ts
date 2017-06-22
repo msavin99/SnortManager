@@ -46,12 +46,10 @@ export class RulesComponent implements OnInit {
 
   directionToString(direction: Direction): string {
     switch (direction) {
-      case Direction.Left:
-        return "<-";
       case Direction.Right:
         return "->";
       case Direction.Both:
-        return "<->";
+        return "<>";
     }
   }
   protocolToString(protocol: Protocol): string {
