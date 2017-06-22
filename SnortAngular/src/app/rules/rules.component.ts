@@ -1,9 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Rule, RulesCollection, Type, Protocol, Direction } from '../rules';
 import { RulesService } from '../rules.service'
 import { ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
 import { saveAs } from "file-saver";
+import { ModalDirective } from 'ng2-bootstrap/modal';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/Rx';
 @Component({
@@ -18,6 +19,8 @@ export class RulesComponent implements OnInit {
   rules: Rule[];
   rulesCollection: RulesCollection;
   selectedRuleId: number;
+
+  @ViewChild('importFinishedModal') public importFinishedModal: ModalDirective;
 
   constructor(
     private rulesService: RulesService,
@@ -134,29 +137,42 @@ export class RulesComponent implements OnInit {
       });
   }
 
-  ExportRulesCSV(){
+  ExportRulesCSV() {
     // call the service downloadRulesFile method with the collection_id parameter.
     return this.rulesService.downloadRulesFile(this.rulesCollection.collection_id)
       .subscribe(result => {
         console.log("Yuppi file result back for downloading the rules !")
-        saveAs(result,this.rulesCollection.fileName.substring(0, this.rulesCollection.fileName.length-4)+".rules");
+        saveAs(result, this.rulesCollection.fileName.substring(0, this.rulesCollection.fileName.length - 4) + ".rules");
       });
 
   }
 
-  ImportInSnort(){
+  ImportInSnort() {
     console.log("Importing into Snort !");
     this.rulesService.importIntoSnort(this.rulesCollection.collection_id)
       .subscribe(result => {
-        if(result)
-        console.log("Rules were imported into snort !");
-        else
-        console.log("There was an error while importing rules into snort !");
+        if (result) {
+          console.log("Rules were imported into snort !");
+          this.showImportFinishedModal();
+        }
+        else {
+          console.log("There was an error while importing rules into snort !");
+          window.alert("There was an error while importing the Snort Rules.\nImporting works only if the server is Linux-hosted.\n"+
+          "If you have Linux hosting, check that the SnortServer has the necessary permissions.");
+        }
         //==========================
         //Maybe show a popup here ?
       })
   }
   goBack(): void {
     this.location.back();
+  }
+
+  public showImportFinishedModal(): void {
+    this.importFinishedModal.show();
+  }
+
+  public hideImportFinishedModal(): void {
+    this.importFinishedModal.hide();
   }
 }

@@ -104,3 +104,21 @@
 
 <!--Just the modal dialog-->
 <modal-dialog #modal [parent]='this'></modal-dialog>
+<!--Another modal dialog-->
+<div class="modal fade" bsModal #importFinishedModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">Import complete !</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideImportFinishedModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <img class="img-fluid" src="/assets/ThumbsUP.jpg">
+        <p> Your file was imported succesfully , you can now restart <b>Snort</b> for the changes to have effect !</p>
+        <button class="btn btn-success btn-block" (click)='hideImportFinishedModal()'>Thanks!</button>
+      </div>
+    </div>
+  </div>
+</div>

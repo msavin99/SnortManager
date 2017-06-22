@@ -28,7 +28,7 @@ var mysql = require('mysql')
 var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'MYSQLROOTPASSWORD',
+    password: '',
     database: 'snortdatabase'
 });
 connection.connect(function (err, connection) {
@@ -190,7 +190,7 @@ function AddRulesToSnortConfigFile(fileName, cb) {
     fs.readFile('/etc/snort/snort.conf', 'utf8', (err, data) => {
         if (err) {
             console.log("Error while reading snort.conf file !");
-            return cb(err,false);
+            return cb(err, false);
         } else {
             // 5. add the new include $RULE_PATH/fileName.rules in snort.conf
             data = data.replace("# site specific rules",
@@ -199,9 +199,9 @@ function AddRulesToSnortConfigFile(fileName, cb) {
             fs.writeFile('/etc/snort/snort.conf', data, (err) => {
                 if (err) {
                     console.log("Error while writing back to snort.conf");
-                    return cb(err,false);
+                    return cb(err, false);
                 } else {
-                    return cb(err,true);
+                    return cb(err, true);
                 }
             })
         }
@@ -212,9 +212,9 @@ function SaveRulesFile(rows) {
     var fileContent = '';
     for (var row of rows) {
         fileContent +=
-            row["type"] + " " + row["sourceIP"] + " " +
-            row["sourcePort"] + " " + row["direction"] + " " +
-            row["destionationIP"] + " " + row["destinationPort"] + " " +
+            typeToString(row["type"]) + " " + protocolToString(row["protocol"]) + " " + row["sourceIP"] + " " +
+            row["sourcePort"] + " " + directionToString(row["direction"]) + " " +
+            row["destinationIP"] + " " + row["destinationPort"] + " " +
             row["content"] + "\n";
     }
     var fileName = rows[0]["fileName"];
@@ -415,6 +415,50 @@ function copyFile(source, target, cb) {
         }
     }
 }
+
+function directionToString(direction) {
+    switch (direction) {
+        case 0:
+            return "<-";
+        case 1:
+            return "->";
+        case 2:
+            return "<->";
+    }
+}
+function protocolToString(protocol) {
+    switch (protocol) {
+        case 0:
+            return "TCP";
+        case 1:
+            return "UDP";
+        case 2:
+            return "ICMP";
+        case 3:
+            return "IP";
+    }
+}
+function typeToString(type) {
+    switch (type) {
+        case 0:
+            return "Alert";
+        case 1:
+            return "Activate";
+        case 2:
+            return "Drop";
+        case 3:
+            return "Dynamic";
+        case 4:
+            return "Log";
+        case 5:
+            return "Pass";
+        case 6:
+            return "Reject";
+        case 7:
+            return "SDrop";
+    }
+}
+
 
 module.exports = router;
 
